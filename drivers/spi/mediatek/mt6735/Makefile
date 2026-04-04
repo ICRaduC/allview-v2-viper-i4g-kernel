@@ -1,5 +1,8 @@
-subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include \
-					-I$(srctree)/drivers/misc/mediatek/include/mt-plat
+subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/include \
+					-I$(srctree)/drivers/misc/mediatek/include/mt-plat \
+					-I$(srctree)/drivers/misc/mediatek/include/mt-plat/mt6735/include \
+					-I$(srctree)/include/mt-plat \
+					-I$(srctree)/include/mach
 ifeq ($(CONFIG_TRUSTONIC_TEE_SUPPORT),y)
 subdir-ccflags-y += -I$(srctree)/drivers/spi/trustzone/spi/Tlspi/inc
 endif

@@ -1,3 +1,7 @@
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/power/mt6735
+ccflags-y += -I$(srctree)/include/mt-plat
+ccflags-y += -I$(srctree)/include/mach
+
 #include $(srctree)/drivers/misc/mediatek/Makefile.custom
 
 #obj-$(CONFIG_MTK_PMIC)          += pmic.o upmu_common.o pmic_auxadc.o pmic_chr_type_det.o mt6311.o

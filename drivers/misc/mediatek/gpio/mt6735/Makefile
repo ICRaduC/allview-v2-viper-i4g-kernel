@@ -1,3 +1,8 @@
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/gpio/mt6735
+ccflags-y += -I$(srctree)/include/mt-plat
+ccflags-y += -I$(srctree)/include/mach
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
+
 ifeq ($(CONFIG_MTK_FPGA),y)
 obj-y	:= mt_gpio_fpga.o
 else
