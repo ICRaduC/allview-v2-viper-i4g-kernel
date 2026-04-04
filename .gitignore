@@ -1,0 +1,39 @@
+# Build artifacts
+*.o
+*.a
+*.ko
+*.mod.c
+*.mod.o
+*.order
+*.symvers
+.tmp_versions/
+modules.order
+Module.symvers
+
+# Kernel build files
+ System.map
+ vmlinux
+ .version
+ .tmp_*
+ .vmlinux.cmd
+
+# Image files
+ arch/arm64/boot/Image*
+ arch/arm*/boot/zImage
+ boot.img
+ boot_new*.img
+
+# Config files
+ .config
+ .config.old
+ .config_sync
+
+# DTB files
+ arch/arm64/boot/dts/*.dtb
+ !arch/arm64/boot/dts/*.dts
+
+# IDE
+ .vscode/
+ .idea/
+ *.swp
+ *.swo

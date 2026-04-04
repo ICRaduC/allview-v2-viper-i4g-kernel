@@ -1,0 +1,11 @@
+tinno6753_65t_m0.o: arch/arm64/boot/dts/tinno6753_65t_m0.dts \
+ arch/arm64/boot/dts/mt6735.dtsi \
+ arch/arm64/boot/dts/include/dt-bindings/clock/mt6735-clk.h \
+ arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/arm-gic.h \
+ arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/irq.h \
+ arch/arm64/boot/dts/mt6735-pinfunc.h \
+ arch/arm64/boot/dts/include/dt-bindings/pinctrl/mt65xx.h \
+ arch/arm64/boot/dts/include/dt-bindings/mmc/mt67xx-msdc.h \
+ arch/arm64/boot/dts/trusty.dtsi \
+ arch/arm64/boot/dts/include/dt-bindings/lcm/hx8392a_dsi_cmd.dtsi \
+ arch/arm64/boot/dts/include/dt-bindings/lcm/lcm_define.h
