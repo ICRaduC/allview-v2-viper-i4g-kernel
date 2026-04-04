@@ -975,7 +975,7 @@ initrd=0x44000000,0x300000 loglevel=8 androidboot.hardware=mt6735";
 		i2c4:i2c@11010000 {
 			compatible = "mediatek,mt6735-i2c";
 			cell-index = <4>;
-			reg = <11010000 0x1000>;
+			reg = <0x11010000 0x1000>;
 			def_speed = <100>;
 			clocks = <&perisys PERI_I2C3>, <&perisys PERI_APDMA>;
 			clock-names = "i2c4-main", "i2c4-dma";
