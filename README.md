@@ -10,9 +10,9 @@ Custom Linux kernel for Allview V2 Viper i4G phone with MT6735 SoC.
 | RAM | 2GB |
 | Display | 720x1280 HD |
 | Storage | 16GB eMMC |
-| Camera | Samsung S5K5E2YA (5MP) |
+| Camera | gc2355 (main) + s5k5e2ya (secondary) |
 | Touchscreen | FocalTech FT8606 |
-| Android | 5.1+ (Lollipop/Marshmallow) |
+| Android | 5.1 (Lollipop) |
 
 ## Kernel Information
 
@@ -22,12 +22,12 @@ Custom Linux kernel for Allview V2 Viper i4G phone with MT6735 SoC.
 
 ## Features
 
-- ✅ MT6735 DTB (correct CPU count, eMMC, GIC)
-- ✅ Samsung S5K5E2YA camera sensor driver
-- ✅ FocalTech FT6x06 touchscreen driver
-- ✅ 720x1280 HD display (hx8392a LCM)
+- ✅ MT6735 SoC (correct CPU cores, eMMC, GIC)
+- ✅ gc2355 + s5k5e2ya camera sensor drivers
+- ✅ FocalTech FT8606 touchscreen driver (dedicated)
+- ✅ 720x1280 HD display (r63417 LCM)
 - ✅ USB gadget stack (ADB, MTP, RNDIS)
-- ✅ USB PHY driver (mt6735)
+- ✅ Real USB20 PLL implementation
 - ✅ No stubs - real MTK drivers
 
 ## Requirements
@@ -61,7 +61,7 @@ sudo apt-get install build-essential git bc bison flex libssl-dev libncurses5-de
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/ICRaduC/allview-v2-viper-i4g-kernel.git
-cd allview-v2-viper-i4g-kernel
+cd allview-v2-viper-i4g-kernel/allview_mt6735
 ```
 
 ### 2. Configure Build Environment
@@ -72,7 +72,10 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 
 ### 3. Configure Kernel
 ```bash
-# Use the included defconfig
+# Use the dedicated Allview defconfig (RECOMMENDED)
+make allview6735_v2_viper_i4g_defconfig
+
+# Or use the working tinno defconfig
 make tinno6753_65t_m0_defconfig
 
 # Or customize
@@ -81,27 +84,36 @@ make menuconfig
 
 ### 4. Build Kernel
 ```bash
-# Clean build (recommended)
+# Clean build (recommended for first time)
 make clean
-make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image.gz-dtb
+make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+
+# Or build just the image
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image.gz-dtb
 ```
 
 ### 5. Create Boot Image
 ```bash
-# Requires original ramdisk (extract from stock boot.img)
+# Extract original ramdisk from stock boot.img first
+# Then create boot image with:
 mkbootimg --kernel arch/arm64/boot/Image.gz-dtb \
-          --ramdisk original_ramdisk.bin \
+          --ramdisk /path/to/ramdisk.cpio.gz \
           --cmdline "bootopt=64S3,32N2,64N2 androidboot.hardware=mt6735 vmalloc=496M slub_max_order=0 slub_debug=O console=ttyMT3,921600n1" \
           --base 0x40000000 \
-          --kernel_offset 0x00080000 \
+          --kernel_offset 0x00008000 \
           --ramdisk_offset 0x04000000 \
-          --tags_offset 0x4e0000 \
+          --tags_offset 0x4e000000 \
+          --pagesize 2048 \
           --output boot.img
 ```
 
-### 6. Fix Load Addresses (if needed)
+### 6. Fix Boot Parameters (Important!)
 ```bash
-abootimg -u boot.img -c "kernel_addr=0x40080000" -c "tags_addr=0x4e000000"
+# Fix kernel and tags addresses (critical!)
+abootimg -u boot.img -c "kerneladdr=0x40080000" -c "tagsaddr=0x4e000000"
+
+# Fix ramdisk structure (files must be at root, not in subfolder)
+# This is already handled in the build process
 ```
 
 ## Flash to Device
@@ -121,36 +133,32 @@ fastboot reboot
 mtkclient rl /path/to/dump/  # Read all partitions
 ```
 
-## Important Notes
+## Critical Boot Parameters
 
-### Critical Boot Parameters
-- `bootopt=64S3,32N2,64N2` - Boot mode for MT6735
-- `androidboot.hardware=mt6735` - Android HAL identification
-- `console=ttyMT3,921600n1` - Serial console (not ttyMT0!)
-- kernel_addr = 0x40080000
-- tags_addr = 0x4e000000 (NOT 0x40080000!)
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| bootopt | 64S3,32N2,64N2 | Boot mode for MT6735 |
+| androidboot.hardware | mt6735 | Android HAL identification |
+| console | ttyMT3,921600n1 | Serial console (ttyMT3!) |
+| vmalloc | 496M | Memory for VMalloc |
+| kernel addr | 0x40080000 | Kernel load address |
+| tags addr | 0x4e000000 | ATAGs address (CRITICAL!) |
 
-### Device Tree Fixes Applied
-- CPU cores: 8 → 4 (MT6735 has 4 A53 cores)
-- eMMC: mt6753-mmc → mt6735-mmc
-- GIC: mediatek,mt6735-gic (correct)
-- PSCI: disabled (MT6735 uses mt-boot method)
+## Device Tree Configuration
 
-### Partition Layout (MT6735)
-| Partition | Size | Purpose |
-|-----------|------|---------|
-| preloader | 4MB | Bootloader stage 1 |
-| lk | 512KB | Bootloader |
-| boot | 16MB | Kernel + initramfs |
-| system | ~2.8GB | Android system |
-| userdata | ~11GB | Data partition |
+The kernel uses these key configurations:
+- **SoC**: CONFIG_ARCH_MT6735=y
+- **Camera**: CONFIG_CUSTOM_KERNEL_IMGSENSOR="gc2355_mipi_raw s5k5e2ya_mipi_raw"
+- **LCM**: CONFIG_CUSTOM_KERNEL_LCM="r63417_fhd_dsi_cmd_truly_nt50358"
+- **Touchscreen**: CONFIG_TINNO_FT8606=y + CONFIG_MTK_TGESTURE=y
+- **USB**: CONFIG_USB_MTK_HDRC=y + CONFIG_USB_MTK_OTG=y
 
 ## Troubleshooting
 
 ### Phone doesn't boot
 1. Check serial output for errors (ttyMT3 @ 921600 baud)
 2. Verify kernel load address (0x40080000)
-3. Verify tags address (0x4e000000)
+3. Verify tags address (0x4e000000) - MOST COMMON ISSUE!
 4. Check DTB uses mt6735.dtsi (not mt6753)
 
 ### USB not working
@@ -158,8 +166,22 @@ mtkclient rl /path/to/dump/  # Read all partitions
 2. Check CONFIG_USB_MTK_HDRC=y
 
 ### Touchscreen not working
-1. Verify I2C address in DTS (FT6x06 @ 0x38)
-2. Check CONFIG_TINNO_FT6X06=y
+1. Verify I2C address in DTS (FT8606 @ 0x38)
+2. Check CONFIG_TINNO_FT8606=y
+
+### Display not working
+1. Check LCM driver in DTB matches panel
+2. Current: r63417_fhd_dsi_cmd_truly_nt50358
+
+## Partition Layout (MT6735)
+
+| Partition | Size | Purpose |
+|-----------|------|---------|
+| preloader | 4MB | Bootloader stage 1 |
+| lk | 512KB | Bootloader |
+| boot | 16MB | Kernel + initramfs |
+| system | ~2.8GB | Android system |
+| userdata | ~11GB | Data partition |
 
 ## Tools for Data Extraction
 
@@ -174,6 +196,24 @@ fastboot flash recovery recovery.img
 fastboot flash boot boot.img
 ```
 
+## Quick Build Commands
+
+```bash
+# Full build from scratch
+cd allview_mt6735
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- allview6735_v2_viper_i4g_defconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+
+# Create boot image (after obtaining original ramdisk)
+mkbootimg --kernel arch/arm64/boot/Image.gz-dtb \
+          --ramdisk ramdisk.cpio.gz \
+          --cmdline "bootopt=64S3,32N2,64N2 androidboot.hardware=mt6735 vmalloc=496M slub_max_order=0 slub_debug=O console=ttyMT3,921600n1" \
+          --base 0x40000000 --kernel_offset 0x00008000 --ramdisk_offset 0x04000000 --tags_offset 0x4e000000 --pagesize 2048 -o boot.img
+
+# Fix addresses
+abootimg -u boot.img -c "kerneladdr=0x40080000" -c "tagsaddr=0x4e000000"
+```
+
 ## License
 
 This kernel is based on Allview/Mediatek sources. License follows original GPL v2.
@@ -181,5 +221,5 @@ This kernel is based on Allview/Mediatek sources. License follows original GPL v
 ## Credits
 
 - Original kernel sources: Allview/Mediatek
-- S5K5E2YA driver: Adapted from Lenovo Marino kernel
+- Camera drivers: gc2355, s5k5e2ya from MT6735 sources
 - Build fixes and porting: Custom work
