@@ -64,35 +64,38 @@ git clone https://github.com/ICRaduC/allview-v2-viper-i4g-kernel.git
 cd allview-v2-viper-i4g-kernel/allview_mt6735
 ```
 
-### 2. Configure Build Environment
+### 2. Install Required Tools
 ```bash
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
+# Ubuntu/Debian
+sudo apt-get install abootimg android-tools-fsutils
+
+# Or build from source if needed
+# mkbootimg is included in android-tools-fsutils
 ```
 
-### 3. Configure Kernel
-```bash
-# Use the dedicated Allview defconfig (RECOMMENDED)
-make allview6735_v2_viper_i4g_defconfig
-
-# Or use the working tinno defconfig
-make tinno6753_65t_m0_defconfig
-
-# Or customize
-make menuconfig
-```
-
-### 4. Build Kernel
+### 3. Configure and Build (Full Workflow)
 ```bash
 # Clean build (recommended for first time)
 make clean
-make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
-# Or build just the image
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image.gz-dtb
+# Configure with dedicated Allview defconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- allview6735_v2_viper_i4g_defconfig
+
+# Build kernel
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+
+# Create boot image (automated)
+./build_bootimg.sh
 ```
 
-### 5. Create Boot Image
+### Quick Build Commands (for subsequent builds)
+```bash
+# Just rebuild after code changes
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+./build_bootimg.sh
+```
+
+### Manual Boot Image Creation (if needed)
 ```bash
 # Extract original ramdisk from stock boot.img first
 # Then create boot image with:
@@ -105,15 +108,9 @@ mkbootimg --kernel arch/arm64/boot/Image.gz-dtb \
           --tags_offset 0x4e000000 \
           --pagesize 2048 \
           --output boot.img
-```
 
-### 6. Fix Boot Parameters (Important!)
-```bash
 # Fix kernel and tags addresses (critical!)
 abootimg -u boot.img -c "kerneladdr=0x40080000" -c "tagsaddr=0x4e000000"
-
-# Fix ramdisk structure (files must be at root, not in subfolder)
-# This is already handled in the build process
 ```
 
 ## Flash to Device
