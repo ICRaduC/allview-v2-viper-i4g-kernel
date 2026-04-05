@@ -21,3 +21,4 @@ ifneq ($(filter "CONSYS_%",$(CONFIG_MTK_COMBO_CHIP)),)
 endif
 
 obj-y   +=  common_detect/
+obj-y   +=  mtk-usb-common.o

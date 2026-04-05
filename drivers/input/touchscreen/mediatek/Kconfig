@@ -37,6 +37,10 @@ config TINNO_FT5346
         bool "FT5346 for Tinno package"
         default n		
 
+config TINNO_FT8606
+        bool "FT8606 for Tinno package"
+        default n
+
 config TOUCHSCREEN_MTK_GT615
 	bool "GT615 for Mediatek package"
 	default n

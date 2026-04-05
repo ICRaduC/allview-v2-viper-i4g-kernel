@@ -20,6 +20,7 @@ obj-$(CONFIG_TOUCHSCREEN_MTK_GT928)	+=  GT928/
 obj-$(CONFIG_TOUCHSCREEN_MTK_GT9XX_HOTKNOT_SCP)	+=  GT9XX_hotknot_scp/
 obj-$(CONFIG_TOUCHSCREEN_MTK_GT911)	+=  GT911/
 obj-$(CONFIG_TOUCHSCREEN_MTK_FT5X0X)	+=  ft5x0x/
+obj-$(CONFIG_MTK_FT5446)		+=  FT5446/
 
 obj-$(CONFIG_MTK_TGESTURE)	+=  tgesture/
 
@@ -40,5 +41,9 @@ obj-y	+=  ft5346/
 endif
 
 ifeq ($(CONFIG_MTK_FT6X06),y)
-obj-y	+=  ft6x06/
+	obj-y	+=  ft6x06/
+endif
+
+ifeq ($(CONFIG_TINNO_FT8606),y)
+	obj-y	+=  ft8606/
 endif

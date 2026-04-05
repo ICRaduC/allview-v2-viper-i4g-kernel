@@ -170,6 +170,14 @@ ACDK_KD_SENSOR_INIT_FUNCTION_STRUCT kdSensorList[MAX_NUM_OF_SUPPORT_SENSOR+1] =
 	{S5K3H7YX_SENSOR_ID, SENSOR_DRVNAME_S5K3H7YX_MIPI_RAW, S5K3H7YX_MIPI_RAW_SensorInit},
 #endif
 
+#if defined(GC2355_MIPI_RAW)
+    {GC2355_SENSOR_ID, SENSOR_DRVNAME_GC2355_MIPI_RAW, GC2355_MIPI_RAW_SensorInit},
+#endif
+
+#if defined(S5K5E2YA_MIPI_RAW)
+    {S5K5E2YA_SENSOR_ID, SENSOR_DRVNAME_S5K5E2YA_MIPI_RAW, S5K5E2YA_MIPI_RAW_SensorInit},
+#endif
+
 //yixuhong 20151118 add tinno camera end
 /*  ADD sensor driver before this line */
     {0,{0},NULL}, //end of list

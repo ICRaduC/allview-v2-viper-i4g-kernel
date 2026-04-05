@@ -2,9 +2,16 @@
 /dts-v1/;
 
 #include "mt6735.dtsi"
-#include <dt-bindings/lcm/hx8392a_dsi_cmd.dtsi>
+#include <dt-bindings/lcm/r63417_fhd_dsi_cmd_truly_nt50358.dtsi>
 
 / {
+	model = "ALLVIEW V2_Viper_I4G";
+	compatible = "allview,v2_viper_i4g", "mediatek,MT6735";
+
+	chosen {
+		bootargs = "console=tty0 console=ttyMT0,921600n1 root=/dev/ram initrd=0x44000000,0x300000 loglevel=8 androidboot.hardware=mt6735";
+	};
+
 	memory@00000000 {
 		device_type = "memory";
 		reg = <0 0x40000000 0 0x1F000000>;
@@ -203,7 +210,7 @@
 		headset-four-key-threshold = <0 58 121 192 450>;
 };
 &touch {
-	tpd-resolution = <1080 1920>;
+	tpd-resolution = <720 1280>;
 	use-tpd-button = <0>;
 	tpd-key-num = <3>;
 	tpd-key-local= <139 172 158 0>;

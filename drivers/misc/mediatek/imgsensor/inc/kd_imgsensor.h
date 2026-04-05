@@ -113,6 +113,7 @@ NSFeature :  : RAWSensorInfo < _id >  :  : getFlickerPara \
 #define OV5648MIPI_SENSOR_ID                    0x5648
 #define S5K2P8_SENSOR_ID                        0x2108
 #define IMX135_SENSOR_ID                        0x0135
+#define S5K5E2YA_SENSOR_ID                      0x5e20
 #define OV5648MIPI_SENSOR_ID                    0x5648
 #define OV5648MIPI_SENSOR_ID_DARLING            0x5649 //yangchen add 
 #define OV5648MIPI_SENSOR_ID_SUNWIN             0x5650 //yangchen add 
@@ -135,6 +136,7 @@ NSFeature :  : RAWSensorInfo < _id >  :  : getFlickerPara \
 #define SENSOR_DRVNAME_S5K3H7YX_MIPI_RAW		"s5k3h7yxmipiraw_sunny" 
 #define SENSOR_DRVNAME_IMX219_MIPI_RAW          "imx219mipiraw"
 #define SENSOR_DRVNAME_GC2355_MIPI_RAW          "gc2355mipiraw"
+#define SENSOR_DRVNAME_S5K5E2YA_MIPI_RAW         "s5k5e2yamipiraw"
 #define SENSOR_DRVNAME_OV5648_MIPI_RAW          "ov5648mipi"
 #define SENSOR_DRVNAME_S5K2P8_MIPI_RAW          "s5k2p8mipiraw"
 #define SENSOR_DRVNAME_IMX135_MIPI_RAW          "imx135mipiraw"

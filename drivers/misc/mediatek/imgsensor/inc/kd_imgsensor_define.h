@@ -171,6 +171,7 @@ typedef enum {
 	SENSOR_FEATURE_SET_N3D_START_STREAMING,
 	SENSOR_FEATURE_GET_SENSOR_N3D_STREAM_TO_VSYNC_TIME,
 	SENSOR_FEATURE_SET_ESHUTTER_GAIN,
+	SENSOR_FEATURE_SET_SHUTTER_FRAME_TIME,
 	SENSOR_FEATURE_SET_OB_LOCK,
 	SENSOR_FEATURE_SET_SENSOR_OTP_AWB_CMD,
 	SENSOR_FEATURE_SET_SENSOR_OTP_LSC_CMD,
@@ -391,6 +392,7 @@ typedef struct {
 	MUINT8 AEShutDelayFrame;    /* The frame of setting shutter default 0 for TG int */
 	MUINT8 AESensorGainDelayFrame;  /* The frame of setting sensor gain */
 	MUINT8 AEISPGainDelayFrame;
+	MUINT8 FrameTimeDelayFrame;
 	MUINT8 MIPIDataLowPwr2HighSpeedTermDelayCount;
 	MUINT8 MIPIDataLowPwr2HighSpeedSettleDelayCount;
 	MUINT8 MIPICLKLowPwr2HighSpeedTermDelayCount;
