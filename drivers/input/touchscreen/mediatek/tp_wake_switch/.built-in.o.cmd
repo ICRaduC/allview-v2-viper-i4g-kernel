@@ -1,0 +1,1 @@
+cmd_drivers/input/touchscreen/mediatek/tp_wake_switch/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/input/touchscreen/mediatek/tp_wake_switch/built-in.o drivers/input/touchscreen/mediatek/tp_wake_switch/tp_wake_switch.o 
