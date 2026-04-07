@@ -44,18 +44,7 @@
 // ---------------------------------------------------------------------------
 
 static LCM_UTIL_FUNCS lcm_util;
-#if 0
 #define SET_RESET_PIN(v)                                    (lcm_util.set_reset_pin((v)))
-#else
-extern int DispTEpin_Enable(void);
-extern int DispTEpin_Disable(void);
-#define SET_RESET_PIN(v)    \
-    if(v)                                           \
-        DispTEpin_Enable(); \
-    else                                           \
-        DispTEpin_Disable();
-
-#endif
 /*#define SET_RESET_PIN(v)    \
     mt_set_gpio_mode(GPIO_LCM_RST,GPIO_MODE_00);    \
     mt_set_gpio_dir(GPIO_LCM_RST,GPIO_DIR_OUT);     \
